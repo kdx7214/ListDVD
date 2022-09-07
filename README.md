@@ -1,6 +1,7 @@
 # ListDVD
 
-A program to read title and track information from a DVD.  
+A program to read title and track information from a DVD. If there are mistakes or you have updated information, please open an
+issue and I'll update as I can.
 
 ## **DVD Layout:**
 
