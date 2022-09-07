@@ -63,7 +63,11 @@ namespace DVDUtilities
 
 
         /*
-         * DVD structures are big endian, so use the private reverse functions to fix
+         * 
+         * DVD structures are big endian, so use the private reverse functions to fix.
+         * The reverse() functions are kept local to each class that needs them so they
+         * can be used outside of the VMG/VTS stuff if desired.
+         * 
          */
 
         private void Init(BinaryReader bin)
