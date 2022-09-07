@@ -10,7 +10,7 @@ using System.Text;
 using DVDUtilities;
 using MediaInfoLib;
 
-NEW_VMG vmg = new NEW_VMG(@"E:\VIDEO_TS\VIDEO_TS.IFO");
+VmgIfo vmg = new VmgIfo(@"E:\VIDEO_TS\VIDEO_TS.IFO");
 
 
 
@@ -26,6 +26,7 @@ Environment.Exit(0);
 
 
 
+/*
 
 var d = new DVDInfo("E:");
 
@@ -49,6 +50,7 @@ foreach (var title in d.titles)
     }
 
 }
+*/
 
 Environment.Exit(0);
 
