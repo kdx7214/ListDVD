@@ -56,8 +56,9 @@ documented here.
 3.  Each VTS can have up to 32 subpicture streams.
 4.  The subtitle control array (PGC_SPST_CTL) has an unusual behavior. There are four entries for subtitle streams of various types in each array entry. Each stream number can only be used ONCE. If there is an entry with all four streams set to zero then there is a single subtitle that is stream #0.
 
-## **Rough Unrefined Layout**
 
+## **Rough Unrefined Layout**
+```
 VIDEO_TS.IFO:  Video Manager IFO file
 	VMG_MAT:  Header found in the file
 		  -->	TT_SRPT:  Table of titles, and the title set (VTS) they are in
@@ -86,6 +87,6 @@ VTS_nn_0.IFO:  Video Title Set nn IFO file
 					--> Subtitle stream control array
 
 
-
+```
 Looking in the video attributes of the titleset (found in VTS_nn_0.IFO) there are bit fields indicating
 which operations are prohibited. These are used to either enable/disable subtitle tracks found in the VTS.
