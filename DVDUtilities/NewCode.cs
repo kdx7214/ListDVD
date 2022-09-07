@@ -4,6 +4,14 @@ using System.Runtime.InteropServices;
 using System.Buffers.Binary;
 
 
+/*
+ * 
+ * C# marshaling of arrays requires that each entry of the array be aligned to a DWORD.
+ * This means that an array of 6-byte structures breaks every time. As a result I've
+ * Used the BinaryReader method of parsing the fields.
+ * 
+ */
+
 namespace DVDUtilities
 {
     #region VmgIfo
@@ -34,7 +42,7 @@ namespace DVDUtilities
         public System.UInt32 SectorPointer_VMG_TXTDT_MG { get; private set; }
         public System.UInt32 SectorPointer_VMGM_C_ADT { get; private set; }
         public System.UInt32 SectorPointer_VMGM_VOBU_ADMAP { get; private set; }
-        public System.UInt16 VideoAttributes_VMGM_VOBS { get; private set; }
+        public VideoAttributes? VideoAttributes_VMGM_VOBS { get; private set; }
         public System.UInt16 NumberAudioStreams_VMGM_VOBS { get; private set; }
         public AudioAttributes[]? AudioAttributes_VMGM_VOBS { get; private set; }
         public System.UInt16 NumberSubpictureStreams_VMGM_VOBS { get; private set; }
@@ -89,7 +97,7 @@ namespace DVDUtilities
             SideID = bin.ReadByte();
             bin.BaseStream.Position = 0x3E;
             NumberTitleSets = reverse(bin.ReadUInt16());
-            ProviderID = new string(bin.ReadChars(32));
+            ProviderID = new string(bin.ReadChars(32)).Trim();
             VmgPos = reverse(bin.ReadUInt64());
             bin.BaseStream.Position = 0x80;
             EndByteAddress_VMGI_MAT = reverse(bin.ReadUInt32());
@@ -105,7 +113,7 @@ namespace DVDUtilities
             SectorPointer_VMGM_C_ADT = reverse(bin.ReadUInt32());
             SectorPointer_VMGM_VOBU_ADMAP = reverse(bin.ReadUInt32());
             bin.BaseStream.Position = 0x100;
-            VideoAttributes_VMGM_VOBS = reverse(bin.ReadUInt16());
+            VideoAttributes_VMGM_VOBS = new VideoAttributes(bin.ReadBytes(2));
             NumberAudioStreams_VMGM_VOBS = reverse(bin.ReadUInt16());
             AudioAttributes_VMGM_VOBS = new AudioAttributes[8];
             for (int i = 0; i < 8; ++i)
@@ -134,12 +142,141 @@ namespace DVDUtilities
             if (AudioAttributes_VMGM_VOBS != null) AudioAttributes_VMGM_VOBS = null;
             if (SubpictureAttributes_VMGM_VOBS != null) SubpictureAttributes_VMGM_VOBS = null;
             if (TT_SRPT != null) TT_SRPT = null;
+            if (VideoAttributes_VMGM_VOBS != null) VideoAttributes_VMGM_VOBS = null;
         }
 
     }
     #endregion
 
-    #region AudioAttributes
+    #region Video Attributes
+    public class VideoAttributes
+    {
+        public enum VideoCodingMode
+        {
+            Unknown,
+            MPEG1,
+            MPEG2
+        }
+
+        public enum VideoStandard
+        {
+            Unknown,
+            NTSC,
+            PAL
+        }
+
+        public enum VideoAspectRatio
+        {
+            Unknown,
+            FourThree,
+            SixteenNine
+        }
+
+        public enum VideoResolution
+        {
+            Unknown,
+            R720x480,
+            R704x480,
+            R352x480,
+            R352x240
+        }
+
+        public enum VideoPALSource
+        {
+            Unknown,
+            Camera,
+            Film
+        }
+
+        VideoCodingMode CodingMode;
+        VideoStandard Standard;
+        VideoAspectRatio AspectRatio;
+        System.Boolean PanScanProhibited;
+        System.Boolean LetterboxProhibited;
+        System.Boolean CCLine21Field1InGOP;
+        System.Boolean CCLine21Field2InGOP;
+        VideoResolution Resolution;
+        System.Boolean LetterBoxed;
+        VideoPALSource PALSource;
+
+        public VideoAttributes(byte[] data)
+        {
+            LetterboxProhibited = ((byte)(data[0] & 1) != 0) ? true : false;
+            PanScanProhibited = ((byte)(data[0] & 2) != 0) ? true : false;
+
+
+            switch ((byte)(data[0] >> 2 & 3))
+            {
+                case 0:
+                    AspectRatio = VideoAspectRatio.FourThree;
+                    break;
+                case 3:
+                    AspectRatio = VideoAspectRatio.SixteenNine;
+                    break;
+                default:
+                    AspectRatio = VideoAspectRatio.Unknown;
+                    break;
+            }
+
+
+            switch ((byte)(data[0] >> 4 & 3))
+            {
+                case 0:
+                    Standard = VideoStandard.NTSC;
+                    break;
+                case 1:
+                    Standard = VideoStandard.PAL;
+                    break;
+                default:
+                    Standard = VideoStandard.Unknown;
+                    break;
+            }
+
+            switch ((byte)(data[0] >> 6 & 3))
+            {
+                case 0:
+                    CodingMode = VideoCodingMode.MPEG1;
+                    break;
+                case 1:
+                    CodingMode = VideoCodingMode.MPEG2;
+                    break;
+                default:
+                    CodingMode = VideoCodingMode.Unknown;
+                    break;
+            }
+
+            PALSource = (((byte)data[1] & 1) != 0) ? VideoPALSource.Film : VideoPALSource.Camera;
+            LetterBoxed = (((byte)data[1] & 4) != 0) ? true : false;
+
+            switch ((byte)(data[1] >> 3 & 7))
+            {
+                case 0:
+                    Resolution = VideoResolution.R720x480;
+                    break;
+                case 1:
+                    Resolution = VideoResolution.R704x480;
+                    break;
+                case 2:
+                    Resolution = VideoResolution.R352x480;
+                    break;
+                case 3:
+                    Resolution = VideoResolution.R352x240;
+                    break;
+                default:
+                    Resolution = VideoResolution.Unknown;
+                    break;
+            }
+
+            CCLine21Field1InGOP = ((byte)(data[1] & 128) != 0) ? true : false;
+            CCLine21Field2InGOP = ((byte)(data[1] & 64) != 0) ? true : false;
+        }
+
+
+    }
+    #endregion
+
+
+    #region Audio Attributes
     public class AudioAttributes
     {
         public byte[]? _data;
@@ -165,7 +302,7 @@ namespace DVDUtilities
     }
     #endregion
 
-    #region SubpictureAttributes
+    #region Subpicture Attributes
     public class SubpictureAttributes
     {
         public byte[]? _data;
