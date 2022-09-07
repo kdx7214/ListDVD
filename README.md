@@ -42,7 +42,10 @@ Manager: Simple? Easy to use? We can't have that. Go back and make it insanely c
 
 The layout of these files is complex and as you might guess, there are a ton of quirks about them. Once the CSS decoding was
 cracked manufacturers started putting random bad information in the tables.  As a result there are some **weird** disks out
-there. This program is only interested in getting the title/track information so many of the tables that aren't used won't be
+there. You can check out the source code for [HandBrake](https://www.handbrake.fr) for the details. The code is really complex,
+but it does show a lot of the weirdness that various disks have.
+
+This program is only interested in getting the title/track information so many of the tables that aren't used won't be
 documented here.
 
 **General Information:**
@@ -51,7 +54,6 @@ documented here.
 2.  Each VTS can have up to 8 audio streams.
 3.  Each VTS can have up to 32 subpicture streams.
 4.  The subtitle control array (PGC_SPST_CTL) has an unusual behavior. There are four entries for subtitle streams of various types in each array entry. Each stream number can only be used ONCE. If there is an entry with all four streams set to zero then there is a single subtitle that is stream #0.
-
 
 ## **Rough Unrefined Layout**
 
