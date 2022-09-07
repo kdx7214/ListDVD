@@ -188,16 +188,16 @@ namespace DVDUtilities
             Film
         }
 
-        VideoCodingMode CodingMode;
-        VideoStandard Standard;
-        VideoAspectRatio AspectRatio;
-        System.Boolean PanScanProhibited;
-        System.Boolean LetterboxProhibited;
-        System.Boolean CCLine21Field1InGOP;
-        System.Boolean CCLine21Field2InGOP;
-        VideoResolution Resolution;
-        System.Boolean LetterBoxed;
-        VideoPALSource PALSource;
+        public VideoCodingMode CodingMode { get; private set; }
+        public VideoStandard Standard { get; private set; }
+        public VideoAspectRatio AspectRatio { get; private set; }
+        public System.Boolean PanScanProhibited { get; private set; }
+        public System.Boolean LetterboxProhibited { get; private set; }
+        public System.Boolean CCLine21Field1InGOP { get; private set; }
+        public System.Boolean CCLine21Field2InGOP { get; private set; }
+        public VideoResolution Resolution { get; private set; }
+        public System.Boolean LetterBoxed { get; private set; }
+        public VideoPALSource PALSource { get; private set; }
 
         public VideoAttributes(byte[] data)
         {
