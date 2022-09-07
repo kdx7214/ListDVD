@@ -1,6 +1,7 @@
 # ListDVD
 
-A program to read title and track information from a DVD.  
+A program to read title and track information from a DVD. If there are mistakes or you have updated information, please open an
+issue and I'll update as I can.
 
 ## **DVD Layout:**
 
@@ -54,9 +55,13 @@ documented here.
 2.  Each VTS can have up to 8 audio streams.
 3.  Each VTS can have up to 32 subpicture streams.
 4.  The subtitle control array (PGC_SPST_CTL) has an unusual behavior. There are four entries for subtitle streams of various types in each array entry. Each stream number can only be used ONCE. If there is an entry with all four streams set to zero then there is a single subtitle that is stream #0.
+5.  Titles do not have to have audio or subpicture streams.
+6.  VOB files are a subset of the MPEG-2 standard. VOB files do not allow all of the features of an mpeg-2 file.
+7.  Any data that is larger than one byte is in big endian order.  Since this code runs on Windows (which is little endian), the BinaryPrimitives class is used to fix that.
+
 
 ## **Rough Unrefined Layout**
-
+```
 VIDEO_TS.IFO:  Video Manager IFO file
 	VMG_MAT:  Header found in the file
 		  -->	TT_SRPT:  Table of titles, and the title set (VTS) they are in
@@ -85,6 +90,6 @@ VTS_nn_0.IFO:  Video Title Set nn IFO file
 					--> Subtitle stream control array
 
 
-
+```
 Looking in the video attributes of the titleset (found in VTS_nn_0.IFO) there are bit fields indicating
 which operations are prohibited. These are used to either enable/disable subtitle tracks found in the VTS.
