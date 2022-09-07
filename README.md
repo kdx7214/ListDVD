@@ -56,6 +56,7 @@ documented here.
 3.  Each VTS can have up to 32 subpicture streams.
 4.  The subtitle control array (PGC_SPST_CTL) has an unusual behavior. There are four entries for subtitle streams of various types in each array entry. Each stream number can only be used ONCE. If there is an entry with all four streams set to zero then there is a single subtitle that is stream #0.
 5.  Titles do not have to have audio or subpicture streams.
+6.  VOB files are a subset of the MPEG-2 standard. VOB files do not allow all of the features of an mpeg-2 file.
 
 
 ## **Rough Unrefined Layout**
