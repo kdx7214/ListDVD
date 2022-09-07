@@ -57,6 +57,7 @@ documented here.
 4.  The subtitle control array (PGC_SPST_CTL) has an unusual behavior. There are four entries for subtitle streams of various types in each array entry. Each stream number can only be used ONCE. If there is an entry with all four streams set to zero then there is a single subtitle that is stream #0.
 5.  Titles do not have to have audio or subpicture streams.
 6.  VOB files are a subset of the MPEG-2 standard. VOB files do not allow all of the features of an mpeg-2 file.
+7.  Any data that is larger than one byte is in big endian order.  Since this code runs on Windows (which is little endian), the BinaryPrimitives class is used to fix that.
 
 
 ## **Rough Unrefined Layout**
