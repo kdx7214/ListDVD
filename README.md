@@ -1,3 +1,7 @@
+# This is a work in progress, not a finished project.  You are warned :)
+
+
+
 # ListDVD
 
 A program to read title and track information from a DVD. If there are mistakes or you have updated information, please open an
